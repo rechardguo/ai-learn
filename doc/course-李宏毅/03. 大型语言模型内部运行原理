@@ -1,0 +1,5 @@
+1. 从输入prompt输出下个token
+2. 看看每一层的layer的输出
+3. 看看每一层的运作
+- transformer
+- self attention ：  寻找输入中会影响最后一个token的token

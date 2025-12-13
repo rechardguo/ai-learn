@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>手写数字识别 (PyTorch + Flask)</title>
+  <style>
+    canvas { border: 2px solid #000; cursor: crosshair; }
+    button { margin: 10px; padding: 10px 20px; font-size: 16px; }
+    #result { font-size: 24px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>✍️ 手写一个数字 (0-9)</h2>
+  <canvas id="canvas" width="280" height="280"></canvas>
+  <br>
+  <button onclick="clearCanvas()">清空</button>
+  <button onclick="recognize()">识别</button>
+  <div id="result">结果: ?</div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let drawing = false;
+
+    // 初始化白色画布
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 20;
+    ctx.lineCap = 'round';
+
+    // 绘图事件
+    canvas.addEventListener('mousedown', (e) => {
+      drawing = true;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    });
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mouseout', () => drawing = false);
+    canvas.addEventListener('mousemove', (e) => {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    });
+
+    function clearCanvas() {
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      document.getElementById('result').innerText = '结果: ?';
+    }
+
+    async function recognize() {
+      // 将 canvas 转为 base64 PNG
+      const dataURL = canvas.toDataURL('image/png');
+      
+      try {
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: dataURL })
+        });
+        
+        const result = await response.json();
+        if (result.prediction !== undefined) {
+          document.getElementById('result').innerText = `结果: ${result.prediction}`;
+        } else {
+          throw new Error(result.error || '未知错误');
+        }
+      } catch (e) {
+        console.error(e);
+        document.getElementById('result').innerText = "识别失败，请确保 Python 服务正在运行！";
+        alert("请先运行 app.py！");
+      }
+    }
+  </script>
+</body>
+</html>

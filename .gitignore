@@ -1,0 +1,10 @@
+# .gitignore
+venv/
+env/
+myenv/
+*.pyc
+__pycache__/
+pyai
+data
+handwriting-identity/mnist
+handwriting-identity/mnist_mlp.pth

@@ -1,7 +1,7 @@
 # .gitignore
 .venv
-*.pyc
-__pycache__/
+__pycache__
+langchain/.env
 data
 handwriting-identity/mnist
 handwriting-identity/mnist_mlp.pth

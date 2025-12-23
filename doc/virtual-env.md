@@ -17,7 +17,14 @@ python3 -m venv .venv
 
 ```
 
-# 
+# 导出requirements.txt
+
 ```
 (.venv) pip freeze > requirements.txt
 ```
+
+# chose a virtual environment
+
+Ctrl + Shift + P
+
+Python: Select Interpreter

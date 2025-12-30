@@ -68,6 +68,9 @@ vector_store = InMemoryVectorStore(embeddings)
 
 ids = vector_store.add_documents(documents=all_splits)
 
+for i in range(5):
+    print(f"Document ID {i}: {ids[i]}")
+
 results = vector_store.similarity_search(
     "How many distribution centers does Nike have in the US?"
 )
@@ -92,3 +95,37 @@ print(doc)
 embedding = embeddings.embed_query("How were Nike's margins impacted in 2023?")
 results = vector_store.similarity_search_by_vector(embedding)
 print(results[0])
+
+
+# vector_store不支持Runnable接口,可以构造出一个简单的retriever Runnable
+from typing import List
+
+from langchain_core.documents import Document
+from langchain_core.runnables import chain
+
+
+@chain
+def retriever(query: str) -> List[Document]:
+    return vector_store.similarity_search(query, k=1)
+
+
+retriever.batch(
+    [
+        "How many distribution centers does Nike have in the US?",
+        "When was Nike incorporated?",
+    ],
+)
+
+
+
+retriever = vector_store.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 1},
+)
+
+retriever.batch(
+    [
+        "How many distribution centers does Nike have in the US?",
+        "When was Nike incorporated?",
+    ],
+)

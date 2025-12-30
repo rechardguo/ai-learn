@@ -1,8 +1,9 @@
 from langchain_deepseek import ChatDeepSeek
 from langchain_openai import ChatOpenAI
-from config import ALI_BL_API_KEY, ALI_BL_BASE_URL, DEEPSEEK_API_KEY,DEEPSEEK_BASE_URL
+from config import ALI_BL_API_KEY, ALI_BL_BASE_URL, DEEPSEEK_API_KEY,DEEPSEEK_BASE_URL,ZHIPU_API_KEY,ZHIPU_BASE_URL
 from langchain.chat_models import init_chat_model
-
+from typing import cast
+from pydantic import SecretStr
 # langchain_deepseek
 # specified for deepseek
 llm_chatdeepseek = ChatDeepSeek(
@@ -31,6 +32,14 @@ qwen_plus = ChatOpenAI(
     api_key=ALI_BL_API_KEY,
     base_url=ALI_BL_BASE_URL,
     model="qwen-plus",  # model list：https://help.aliyun.com/zh/model-studio/getting-started/models
+    temperature=0.1,
+)
+
+
+zhipu_glm46 = ChatOpenAI(
+    api_key=ZHIPU_API_KEY,
+    base_url=ZHIPU_BASE_URL,
+    model="GLM-4.6",  # model list：https://help.aliyun.com/zh/model-studio/getting-started/models
     temperature=0.1,
 )
 

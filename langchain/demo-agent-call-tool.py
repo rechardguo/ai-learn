@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.structured_output import ToolStrategy
+from langchain_core.runnables import RunnableConfig
 
 from tools import *
 from llm import *
@@ -20,7 +21,7 @@ If a user asks you for the weather, make sure you know the location. If you can 
 """
 
 # Configure llm model
-model = chatdeepseek
+model = zhipu_glm46
 
 # Define response format
 @dataclass
@@ -46,7 +47,7 @@ agent = create_agent(
 
 # Run agent
 # `thread_id` is a unique identifier for a given conversation.
-config = {"configurable": {"thread_id": "1"}}
+config = RunnableConfig({"configurable": {"thread_id": "1"}})
 
 response = agent.invoke(
     {"messages": [{"role": "user", "content": "what is the weather outside?"}]},
